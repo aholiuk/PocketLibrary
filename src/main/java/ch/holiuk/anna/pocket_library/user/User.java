@@ -11,7 +11,10 @@ public class User {
   @Id
   private String keycloakId;
 
+  private Long id;
+
   private String username;
+  private String password;
 }
 
 //for login:
