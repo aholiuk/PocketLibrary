@@ -1,7 +1,10 @@
 package ch.holiuk.anna.pocket_library.auth;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import java.util.*;
 
@@ -10,63 +13,67 @@ public class KeycloakService {
 
   private final RestTemplate restTemplate = new RestTemplate();
 
-  private final String serverUrl = "http://localhost:8080";
-  private final String realm = "PocketLibrary";
+  @Value("${keycloak.server-url}")
+  private String serverUrl;
 
-  public void createUser(RegisterRequest request) {
+  @Value("${keycloak.realm}")
+  private String realm;
 
-    String adminToken = getAdminToken();
+  @Value("${keycloak.client-id}")
+  private String clientId;
 
-    String url = serverUrl + "/admin/realms/" + realm + "/users";
+  @Value("${keycloak.client-secret}")
+  private String clientSecret;
+
+  @Value("${keycloak.target-realm}")
+  private String targetRealm;
+
+  public void createUser(RegisterRequest req) {
+
+    String token = getToken();
+
+    String url = serverUrl + "/admin/realms/" + targetRealm + "/users";
 
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
-    headers.setBearerAuth(adminToken);
+    headers.setBearerAuth(token);
 
     Map<String, Object> user = new HashMap<>();
-    user.put("username", request.getUsername());
-    user.put("email", request.getEmail());
+    user.put("username", req.getUsername());
+    user.put("email", req.getEmail());
     user.put("enabled", true);
 
-    Map<String, Object> credentials = new HashMap<>();
-    credentials.put("type", "password");
-    credentials.put("value", request.getPassword());
-    credentials.put("temporary", false);
+    Map<String, Object> credential = new HashMap<>();
+    credential.put("type", "password");
+    credential.put("value", req.getPassword());
+    credential.put("temporary", false);
 
-    user.put("credentials", List.of(credentials));
+    user.put("credentials", List.of(credential));
 
-    HttpEntity<Map<String, Object>> entity = new HttpEntity<>(user, headers);
+    HttpEntity<Map<String, Object>> request =
+            new HttpEntity<>(user, headers);
 
-    ResponseEntity<String> response =
-            restTemplate.postForEntity(url, entity, String.class);
-
-    if (!response.getStatusCode().is2xxSuccessful()) {
-      throw new RuntimeException("Keycloak user creation failed: " + response.getBody());
-    }
+    restTemplate.postForEntity(url, request, String.class);
   }
 
-  private String getAdminToken() {
+  private String getToken() {
 
-    String url = serverUrl + "/realms/master/protocol/openid-connect/token";
+    String url = serverUrl + "/realms/" + realm + "/protocol/openid-connect/token";
 
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-    String body =
-            "client_id=admin-cli" +
-                    "&username=admin" +
-                    "&password=admin" +
-                    "&grant_type=password";
+    MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+    body.add("grant_type", "client_credentials");
+    body.add("client_id", clientId);
+    body.add("client_secret", clientSecret);
 
-    HttpEntity<String> entity = new HttpEntity<>(body, headers);
+    HttpEntity<MultiValueMap<String, String>> request =
+            new HttpEntity<>(body, headers);
 
     ResponseEntity<Map> response =
-            restTemplate.postForEntity(url, entity, Map.class);
+            restTemplate.postForEntity(url, request, Map.class);
 
-    if (response.getBody() == null || response.getBody().get("access_token") == null) {
-      throw new RuntimeException("Cannot get admin token from Keycloak");
-    }
-
-    return response.getBody().get("access_token").toString();
+    return (String) response.getBody().get("access_token");
   }
 }

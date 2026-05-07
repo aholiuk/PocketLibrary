@@ -1,6 +1,8 @@
-server.port: 9090
+server:
+  port: 9090
+
 spring:
-  app:
+  application:
     name: pocket-library-user
 
   jpa:
@@ -12,10 +14,17 @@ spring:
     url: jdbc:postgresql://localhost:5432/pocket_library
     username: postgres
     password: admin
-    driverClassName: org.postgresql.Driver
+    driver-class-name: org.postgresql.Driver
 
   security:
     oauth2:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:8080/realms/PocketLibrary
+
+keycloak:
+  server-url: http://localhost:8080
+  realm: master
+  client-id: pocket-admin
+  client-secret: XYI6YJ9nJmIMetGkMEiAvybV5P3XZups
+  target-realm: PocketLibrary
