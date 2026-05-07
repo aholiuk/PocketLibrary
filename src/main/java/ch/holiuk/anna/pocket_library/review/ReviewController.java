@@ -1,5 +1,6 @@
 package ch.holiuk.anna.pocket_library.review;
 
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class ReviewController {
   }
 
   @GetMapping("/book/{bookId}")
+  @Validated
   public List<Review> getReviewsByBook(@PathVariable Long bookId) {
     return reviewService.getReviewsByBook(bookId);
   }

@@ -2,5 +2,8 @@ package ch.holiuk.anna.pocket_library.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+import java.util.Optional;
+
+public interface UserRepository extends JpaRepository<User, String> {
+  Optional<User> findById(Long id);
 }
