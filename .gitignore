@@ -58,3 +58,6 @@ build/
 hs_err_pid*
 replay_pid*
 >>>>>>> 187141ba6114c5eca486c50faad535a72dafec01
+
+# yaml
+.yaml

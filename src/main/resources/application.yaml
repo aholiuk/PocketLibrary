@@ -26,5 +26,5 @@ keycloak:
   server-url: http://localhost:8080
   realm: master
   client-id: pocket-admin
-  client-secret: XYI6YJ9nJmIMetGkMEiAvybV5P3XZups
+  client-secret: zEoTeOlZC42FPQO6uG4VG6pWlmIrh64W
   target-realm: PocketLibrary
