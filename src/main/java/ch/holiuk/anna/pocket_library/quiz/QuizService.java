@@ -1,4 +1,4 @@
-package ch.holiuk.anna.pocket_library.auth.quiz;
+package ch.holiuk.anna.pocket_library.quiz;
 
 import org.springframework.stereotype.Service;
 
