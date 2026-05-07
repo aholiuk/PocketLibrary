@@ -1,5 +1,7 @@
 package ch.holiuk.anna.pocket_library.user;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -11,13 +13,8 @@ public class UserController {
     this.userService = userService;
   }
 
-  @PostMapping
-  public User createUser(@RequestBody User user) {
-    return userService.createUser(user);
-  }
-
-  @GetMapping("/{id}")
-  public User getUserById(@PathVariable Long id) {
-    return userService.getUserById(id);
+  @GetMapping("/me")
+  public User getMe(@AuthenticationPrincipal Jwt jwt) {
+    return userService.getOrCreateUser(jwt);
   }
 }

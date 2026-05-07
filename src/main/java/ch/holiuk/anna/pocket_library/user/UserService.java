@@ -1,5 +1,6 @@
 package ch.holiuk.anna.pocket_library.user;
 
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -10,23 +11,17 @@ public class UserService {
     this.userRepository = userRepository;
   }
 
-  public User createUser(User user) {
-    return userRepository.save(user);
-  }
+  public User getOrCreateUser(Jwt jwt) {
 
-  public User login(String username, String password) {
+    String keycloakId = jwt.getSubject();
+    String username = jwt.getClaim("preferred_username");
 
-    User user = userRepository.findByUsername(username);
-
-    if (user == null) {
-      throw new RuntimeException("User not found");
-    }
-
-    return user;
-  }
-
-  public User getUserById(Long id) {
-    return userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+    return userRepository.findById(keycloakId)
+            .orElseGet(() -> {
+              User user = new User();
+              user.setKeycloakId(keycloakId);
+              user.setUsername(username);
+              return userRepository.save(user);
+            });
   }
 }
