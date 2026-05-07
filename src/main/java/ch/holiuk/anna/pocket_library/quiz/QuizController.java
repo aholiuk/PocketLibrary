@@ -17,3 +17,5 @@ public class QuizController {
     return quizService.saveResponse(quiz);
   }
 }
+
+//TODO: Assign roles to all the endpoints

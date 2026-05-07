@@ -54,3 +54,5 @@ public class BookController {
     return bookService.rateBook(id, rating);
   }
 }
+
+//TODO: Assign roles to all the endpoints

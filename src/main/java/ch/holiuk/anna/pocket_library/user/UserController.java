@@ -18,3 +18,5 @@ public class UserController {
     return userService.getOrCreateUser(jwt);
   }
 }
+
+//TODO: Assign roles to all the endpoints

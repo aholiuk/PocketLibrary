@@ -24,3 +24,5 @@ public class FriendController {
     return friendService.getFriends(userId);
   }
 }
+
+//TODO: Assign roles to all the endpoints

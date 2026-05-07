@@ -19,3 +19,5 @@ public class RecommendationController {
     return recommendationService.recommend(userId);
   }
 }
+
+//TODO: Assign roles to all the endpoints

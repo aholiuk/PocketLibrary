@@ -39,3 +39,5 @@ public class ReviewController {
     return reviewService.getReviewsByUser(userId);
   }
 }
+
+//TODO: Assign roles to all the endpoints

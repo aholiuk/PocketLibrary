@@ -21,3 +21,8 @@ public class Book {
   private Double progress = 0.0;
   private Integer rating;
 }
+
+//TODO: Assign roles to all endpoints
+//      UnitTests
+//      Documentation
+//      Test Endpoints
