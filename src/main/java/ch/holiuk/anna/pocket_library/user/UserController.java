@@ -1,10 +1,12 @@
 package ch.holiuk.anna.pocket_library.user;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@Tag(name = "Users", description = "Manage Users")
 @RequestMapping("/users")
 public class UserController {
   private final UserService userService;
