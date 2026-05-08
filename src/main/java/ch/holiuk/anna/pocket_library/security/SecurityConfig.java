@@ -29,7 +29,9 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 ->
-                        oauth2.jwt(jwt -> {})
+                        oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(
+                                new AuthenticationRoleConverter("pocket-library") // match your Keycloak client name
+                        ))
                 );
 
         return http.build();
