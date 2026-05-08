@@ -1,8 +1,10 @@
 package ch.holiuk.anna.pocket_library.book;
 
+import ch.holiuk.anna.pocket_library.security.SecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -15,7 +17,9 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+
 @WebMvcTest(BookController.class)
+@Import(SecurityConfig.class)
 class BookControllerTest {
 
   @Autowired
