@@ -1,6 +1,10 @@
 package ch.holiuk.anna.pocket_library.user;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
@@ -21,13 +25,25 @@ public class UserController {
     this.userRepository = userRepository;
   }
 
-  @Tag(name = "Get Current User", description = "Return current user")
+  @Operation(summary = "Get the currently logged-in user")
+  @ApiResponses({
+          @ApiResponse(responseCode = "200", description = "Current user returned"),
+          @ApiResponse(responseCode = "401", description = "Unauthorized")
+  })
+  @PreAuthorize("isAuthenticated()")
   @GetMapping("/me")
   public User getMe(@AuthenticationPrincipal Jwt jwt) {
     return userService.getOrCreateUser(jwt);
   }
 
-  @Tag(name = "Get All User", description = "Return all users")
+
+
+  @Operation(summary = "Get all users – admin only")
+  @ApiResponses({
+          @ApiResponse(responseCode = "200", description = "User list returned"),
+          @ApiResponse(responseCode = "403", description = "Access denied – admin role required")
+  })
+  @PreAuthorize("hasAuthority('ROLE_admin')")
   @GetMapping
   public List<User> getAllUsers() {
     return userRepository.findAll();
