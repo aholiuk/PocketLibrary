@@ -10,5 +10,5 @@ public interface QuizRepository extends JpaRepository<Quiz, Long>{
 
   List<Quiz> findByLikedLastBookTrueAndFavoriteGenre(String genre);
 
-  Optional<Quiz> findByUserId(Long userId);
+  Optional<Quiz> findByUserId(String userId);
 }

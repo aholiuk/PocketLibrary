@@ -23,7 +23,6 @@ public class Book {
 }
 
 //TODO: Assign roles to all endpoints
-//      Swagger @Tag(name="", description="") annotations on each controller and endpoint
 //      UnitTests
 //      Documentation
 //      Test Endpoints

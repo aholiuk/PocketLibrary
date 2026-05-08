@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@Tag(name = "Users", description = "Manage Users")
+@Tag(name = "Users", description = "Manage users")
 @RequestMapping("/users")
 public class UserController {
   private final UserService userService;
@@ -21,17 +21,16 @@ public class UserController {
     this.userRepository = userRepository;
   }
 
-  @Tag(name = "Get Current User", description = "Returns current user")
+  @Tag(name = "Get Current User", description = "Return current user")
   @GetMapping("/me")
   public User getMe(@AuthenticationPrincipal Jwt jwt) {
     return userService.getOrCreateUser(jwt);
   }
 
+  @Tag(name = "Get All User", description = "Return all users")
   @GetMapping
   public List<User> getAllUsers() {
     return userRepository.findAll();
   }
 
 }
-
-//TODO: Assign roles to all the endpoints

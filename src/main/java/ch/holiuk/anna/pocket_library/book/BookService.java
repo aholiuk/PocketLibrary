@@ -31,14 +31,17 @@ public class BookService {
 
   public Book updateBook(Long id, Book updatedBook) {
 
-    Book existingBook = bookRepository.findById(id)
+    Book book = bookRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Book not found"));
 
-    existingBook.setTitle(updatedBook.getTitle());
-    existingBook.setAuthor(updatedBook.getAuthor());
-    existingBook.setTotalPages(updatedBook.getTotalPages());
+    book.setTitle(updatedBook.getTitle());
+    book.setAuthor(updatedBook.getAuthor());
+    book.setPagesRead(updatedBook.getPagesRead());
+    book.setTotalPages(updatedBook.getTotalPages());
+    book.setProgress(updatedBook.getProgress());
+    book.setRating(updatedBook.getRating());
 
-    return bookRepository.save(existingBook);
+    return bookRepository.save(book);
   }
 
   public Book updatePagesRead(Long id, int pagesRead) {

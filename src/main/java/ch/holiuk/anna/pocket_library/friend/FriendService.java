@@ -21,10 +21,10 @@ public class FriendService {
   public void addFriend(String userId, String friendId) {
 
     User user = userRepository.findById(userId)
-            .orElseThrow();
+            .orElseThrow(() -> new RuntimeException("User not found"));
 
     User friendUser = userRepository.findById(friendId)
-            .orElseThrow();
+            .orElseThrow(() -> new RuntimeException("Friend not found"));
 
     Friend friend = new Friend();
     friend.setUser(user);

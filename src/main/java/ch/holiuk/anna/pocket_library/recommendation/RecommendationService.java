@@ -15,7 +15,7 @@ public class RecommendationService {
     this.quizRepository = quizRepository;
   }
 
-  public List<String> recommend(Long userId) {
+  public List<String> recommend(String userId) {
 
     Quiz userQuiz = quizRepository.findByUserId(userId)
             .orElseThrow(() -> new RuntimeException("Quiz not found"));

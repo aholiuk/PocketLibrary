@@ -9,7 +9,8 @@ import lombok.Data;
 public class Friend {
 
   @Id
-  private String keycloakId;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
   @ManyToOne
   private User user;
