@@ -15,10 +15,12 @@ public class UserController {
     this.userService = userService;
   }
 
+  @Tag(name = "Get User", description = "Get user by ID")
   @GetMapping("/me")
   public User getMe(@AuthenticationPrincipal Jwt jwt) {
     return userService.getOrCreateUser(jwt);
   }
+
 }
 
 //TODO: Assign roles to all the endpoints

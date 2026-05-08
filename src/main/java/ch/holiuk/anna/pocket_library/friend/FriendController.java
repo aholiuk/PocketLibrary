@@ -1,6 +1,9 @@
 package ch.holiuk.anna.pocket_library.friend;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -13,16 +16,20 @@ public class FriendController {
     this.friendService = friendService;
   }
 
-  @PostMapping("/{userId}/{friendId}")
-  public void addFriend(@PathVariable Long userId,
-                        @PathVariable Long friendId) {
+  @PostMapping("/{friendId}")
+  public void addFriend(@AuthenticationPrincipal Jwt jwt,
+                        @PathVariable String friendId) {
+
+    String userId = jwt.getSubject();
+
     friendService.addFriend(userId, friendId);
   }
 
-  @GetMapping("/{userId}")
-  public List<Friend> getFriends(@PathVariable Long userId) {
+  @GetMapping
+  public List<Friend> getFriends(@AuthenticationPrincipal Jwt jwt) {
+
+    String userId = jwt.getSubject();
+
     return friendService.getFriends(userId);
   }
 }
-
-//TODO: Assign roles to all the endpoints

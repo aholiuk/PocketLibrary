@@ -1,5 +1,7 @@
 package ch.holiuk.anna.pocket_library.review;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,9 +18,11 @@ public class ReviewController {
   }
 
   @PostMapping
-  public Review createReview(@RequestParam Long userId,
+  public Review createReview(@AuthenticationPrincipal Jwt jwt,
                              @RequestParam Long bookId,
                              @RequestBody String text) {
+
+    String userId = jwt.getSubject();
 
     return reviewService.createReview(userId, bookId, text);
   }
@@ -35,7 +39,7 @@ public class ReviewController {
   }
 
   @GetMapping("/user/{userId}")
-  public List<Review> getReviewsByUser(@PathVariable Long userId) {
+  public List<Review> getReviewsByUser(@PathVariable String userId) {
     return reviewService.getReviewsByUser(userId);
   }
 }

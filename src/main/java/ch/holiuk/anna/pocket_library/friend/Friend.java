@@ -1,5 +1,6 @@
 package ch.holiuk.anna.pocket_library.friend;
 
+import ch.holiuk.anna.pocket_library.user.User;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -8,10 +9,11 @@ import lombok.Data;
 public class Friend {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  private String keycloakId;
 
-  private Long userId;
+  @ManyToOne
+  private User user;
 
-  private Long friendId;
+  @ManyToOne
+  private User friend;
 }

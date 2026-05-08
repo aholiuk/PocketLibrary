@@ -5,5 +5,5 @@ import java.util.List;
 
 public interface FriendRepository extends JpaRepository<Friend, Long> {
 
-  List<Friend> findByUserId(Long userId);
+  List<Friend> findByUserKeycloakId(String keycloakId);
 }

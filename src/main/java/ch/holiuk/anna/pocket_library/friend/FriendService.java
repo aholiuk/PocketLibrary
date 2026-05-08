@@ -1,7 +1,8 @@
 package ch.holiuk.anna.pocket_library.friend;
 
-import org.springframework.stereotype.Service;
+import ch.holiuk.anna.pocket_library.user.User;
 import ch.holiuk.anna.pocket_library.user.UserRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -17,22 +18,22 @@ public class FriendService {
     this.userRepository = userRepository;
   }
 
-  public void addFriend(Long userId, Long friendId) {
+  public void addFriend(String userId, String friendId) {
 
-    userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("User does not exist"));
+    User user = userRepository.findById(userId)
+            .orElseThrow();
 
-    userRepository.findById(friendId)
-            .orElseThrow(() -> new RuntimeException("Friend does not exist"));
+    User friendUser = userRepository.findById(friendId)
+            .orElseThrow();
 
     Friend friend = new Friend();
-    friend.setUserId(userId);
-    friend.setFriendId(friendId);
+    friend.setUser(user);
+    friend.setFriend(friendUser);
 
     friendRepository.save(friend);
   }
 
-  public List<Friend> getFriends(Long userId) {
-    return friendRepository.findByUserId(userId);
+  public List<Friend> getFriends(String userId) {
+    return friendRepository.findByUserKeycloakId(userId);
   }
 }

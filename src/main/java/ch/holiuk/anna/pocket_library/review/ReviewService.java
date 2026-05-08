@@ -1,10 +1,10 @@
 package ch.holiuk.anna.pocket_library.review;
 
-import org.springframework.stereotype.Service;
 import ch.holiuk.anna.pocket_library.book.Book;
 import ch.holiuk.anna.pocket_library.book.BookRepository;
 import ch.holiuk.anna.pocket_library.user.User;
 import ch.holiuk.anna.pocket_library.user.UserRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ public class ReviewService {
     this.bookRepository = bookRepository;
   }
 
-  public Review createReview(Long userId, Long bookId, String text) {
+  public Review createReview(String userId, Long bookId, String text) {
 
     User user = userRepository.findById(userId)
             .orElseThrow(() -> new RuntimeException("User not found"));
@@ -47,7 +47,7 @@ public class ReviewService {
     return reviewRepository.findByBookId(bookId);
   }
 
-  public List<Review> getReviewsByUser(Long userId) {
-    return reviewRepository.findByUserId(userId);
+  public List<Review> getReviewsByUser(String userId) {
+    return reviewRepository.findByUserKeycloakId(userId);
   }
 }
