@@ -1,6 +1,10 @@
 package ch.holiuk.anna.pocket_library.review;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
@@ -19,7 +23,13 @@ public class ReviewController {
     this.reviewService = reviewService;
   }
 
-  @Tag(name="Post Review", description="Create new review for the")
+  @Operation(summary = "Create a review for a book")
+  @ApiResponses({
+          @ApiResponse(responseCode = "200", description = "Review created"),
+          @ApiResponse(responseCode = "404", description = "Book or user not found"),
+          @ApiResponse(responseCode = "401", description = "Unauthorized")
+  })
+  @PreAuthorize("hasAnyAuthority('ROLE_read', 'ROLE_admin')")
   @PostMapping
   public Review createReview(@AuthenticationPrincipal Jwt jwt,
                              @RequestParam Long bookId,
@@ -30,20 +40,35 @@ public class ReviewController {
     return reviewService.createReview(userId, bookId, text);
   }
 
-  @Tag(name="Get All Reviews", description="Receive all the reviews")
+  @Operation(summary = "Get all reviews")
+  @ApiResponses({
+          @ApiResponse(responseCode = "200", description = "List of reviews returned"),
+          @ApiResponse(responseCode = "401", description = "Unauthorized")
+  })
+  @PreAuthorize("hasAnyAuthority('ROLE_read', 'ROLE_admin')")
   @GetMapping
   public List<Review> getAllReviews() {
     return reviewService.getAllReviews();
   }
 
-  @Tag(name="Get All Reviews By Book", description="Receive all the reviews for one book by bookId")
+  @Operation(summary = "Get all reviews for a specific book")
+  @ApiResponses({
+          @ApiResponse(responseCode = "200", description = "Reviews returned"),
+          @ApiResponse(responseCode = "404", description = "Book not found")
+  })
+  @PreAuthorize("hasAnyAuthority('ROLE_read', 'ROLE_admin')")
   @GetMapping("/book/{bookId}")
   @Validated
   public List<Review> getReviewsByBook(@PathVariable Long bookId) {
     return reviewService.getReviewsByBook(bookId);
   }
 
-  @Tag(name="Get All Reviews By User", description="Receive all the reviews of one user by userId")
+  @Operation(summary = "Get all reviews by a specific user")
+  @ApiResponses({
+          @ApiResponse(responseCode = "200", description = "Reviews returned"),
+          @ApiResponse(responseCode = "404", description = "User not found")
+  })
+  @PreAuthorize("hasAnyAuthority('ROLE_read', 'ROLE_admin')")
   @GetMapping("/user/{userId}")
   public List<Review> getReviewsByUser(@PathVariable String userId) {
     return reviewService.getReviewsByUser(userId);

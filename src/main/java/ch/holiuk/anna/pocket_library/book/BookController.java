@@ -26,7 +26,6 @@ public class BookController {
           @ApiResponse(responseCode = "401", description = "Unauthorized")
   })
   @PreAuthorize("hasAuthority('ROLE_admin')")
-  @Tag(name="Post Book", description="Add new book to the library")
   @PostMapping
   public Book addBook(@RequestBody final Book book) {
     return bookService.addBook(book);
@@ -40,7 +39,6 @@ public class BookController {
           @ApiResponse(responseCode = "403", description = "Access denied")
   })
   @PreAuthorize("hasAnyAuthority('ROLE_read', 'ROLE_admin')")
-  @Tag(name="Get All Books", description="Get added books from the library")
   @GetMapping
   public List<Book> getAllBooks() {
     return bookService.getAllBooks();
@@ -54,7 +52,6 @@ public class BookController {
           @ApiResponse(responseCode = "401", description = "Unauthorized")
   })
   @PreAuthorize("hasAnyAuthority('ROLE_read', 'ROLE_admin')")
-  @Tag(name="Get Book", description="Get one added book from the library")
   @GetMapping("/{id}")
   public Book getBook(@PathVariable Long id) {
     return bookService.getBookById(id);
@@ -68,7 +65,6 @@ public class BookController {
           @ApiResponse(responseCode = "404", description = "Book not found")
   })
   @PreAuthorize("hasAuthority('ROLE_admin')")
-  @Tag(name="Delete Book", description="Delete book from the library")
   @DeleteMapping("/{id}")
   public void deleteBook(@PathVariable Long id) {
     bookService.deleteBook(id);
@@ -82,7 +78,6 @@ public class BookController {
           @ApiResponse(responseCode = "404", description = "Book not found")
   })
   @PreAuthorize("hasAuthority('ROLE_admin')")
-  @Tag(name="Update Book", description="Update information about the book")
   @PutMapping("/{id}")
   public Book updateBook(@PathVariable Long id, @RequestBody Book updatedBook) {
     return bookService.updateBook(id, updatedBook);
@@ -96,7 +91,6 @@ public class BookController {
           @ApiResponse(responseCode = "401", description = "Unauthorized")
   })
   @PreAuthorize("hasAnyAuthority('ROLE_read', 'ROLE_admin')")
-  @Tag(name="Update Pages", description="Update only the amount of read pages in the book")
   @PatchMapping("/{id}")
   public Book updatePagesRead(
           @PathVariable Long id,
@@ -113,7 +107,6 @@ public class BookController {
           @ApiResponse(responseCode = "404", description = "Book not found")
   })
   @PreAuthorize("hasAnyAuthority('ROLE_read', 'ROLE_admin')")
-  @Tag(name="Rate Book", description="Add only the rating to the book")
   @PatchMapping("/{id}/rating")
   public Book rateBook(
           @PathVariable Long id,
