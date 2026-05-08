@@ -1,6 +1,10 @@
 package ch.holiuk.anna.pocket_library.book;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,36 +19,83 @@ public class BookController {
     this.bookService = bookService;
   }
 
+  @Operation(summary = "Add a new book to the library")
+  @ApiResponses({
+          @ApiResponse(responseCode = "200", description = "Book created successfully"),
+          @ApiResponse(responseCode = "403", description = "Access denied – admin role required"),
+          @ApiResponse(responseCode = "401", description = "Unauthorized")
+  })
+  @PreAuthorize("hasAuthority('ROLE_admin')")
   @Tag(name="Post Book", description="Add new book to the library")
   @PostMapping
   public Book addBook(@RequestBody final Book book) {
     return bookService.addBook(book);
   }
 
+
+  @Operation(summary = "Get all books from the library")
+  @ApiResponses({
+          @ApiResponse(responseCode = "200", description = "List of books returned"),
+          @ApiResponse(responseCode = "401", description = "Unauthorized"),
+          @ApiResponse(responseCode = "403", description = "Access denied")
+  })
+  @PreAuthorize("hasAnyAuthority('ROLE_read', 'ROLE_admin')")
   @Tag(name="Get All Books", description="Get added books from the library")
   @GetMapping
   public List<Book> getAllBooks() {
     return bookService.getAllBooks();
   }
 
+
+  @Operation(summary = "Get a single book by ID")
+  @ApiResponses({
+          @ApiResponse(responseCode = "200", description = "Book found"),
+          @ApiResponse(responseCode = "404", description = "Book not found"),
+          @ApiResponse(responseCode = "401", description = "Unauthorized")
+  })
+  @PreAuthorize("hasAnyAuthority('ROLE_read', 'ROLE_admin')")
   @Tag(name="Get Book", description="Get one added book from the library")
   @GetMapping("/{id}")
   public Book getBook(@PathVariable Long id) {
     return bookService.getBookById(id);
   }
 
+
+  @Operation(summary = "Delete a book from the library")
+  @ApiResponses({
+          @ApiResponse(responseCode = "200", description = "Book deleted"),
+          @ApiResponse(responseCode = "403", description = "Access denied – admin role required"),
+          @ApiResponse(responseCode = "404", description = "Book not found")
+  })
+  @PreAuthorize("hasAuthority('ROLE_admin')")
   @Tag(name="Delete Book", description="Delete book from the library")
   @DeleteMapping("/{id}")
   public void deleteBook(@PathVariable Long id) {
     bookService.deleteBook(id);
   }
 
+
+  @Operation(summary = "Update all book information")
+  @ApiResponses({
+          @ApiResponse(responseCode = "200", description = "Book updated"),
+          @ApiResponse(responseCode = "403", description = "Access denied – admin role required"),
+          @ApiResponse(responseCode = "404", description = "Book not found")
+  })
+  @PreAuthorize("hasAuthority('ROLE_admin')")
   @Tag(name="Update Book", description="Update information about the book")
   @PutMapping("/{id}")
   public Book updateBook(@PathVariable Long id, @RequestBody Book updatedBook) {
     return bookService.updateBook(id, updatedBook);
   }
 
+
+  @Operation(summary = "Update reading progress (pages read)")
+  @ApiResponses({
+          @ApiResponse(responseCode = "200", description = "Progress updated"),
+          @ApiResponse(responseCode = "404", description = "Book not found"),
+          @ApiResponse(responseCode = "401", description = "Unauthorized")
+  })
+  @PreAuthorize("hasAnyAuthority('ROLE_read', 'ROLE_admin')")
   @Tag(name="Update Pages", description="Update only the amount of read pages in the book")
   @PatchMapping("/{id}")
   public Book updatePagesRead(
@@ -54,6 +105,14 @@ public class BookController {
     return bookService.updatePagesRead(id, pagesRead);
   }
 
+
+  @Operation(summary = "Rate a book (1–10)")
+  @ApiResponses({
+          @ApiResponse(responseCode = "200", description = "Rating saved"),
+          @ApiResponse(responseCode = "400", description = "Invalid rating value"),
+          @ApiResponse(responseCode = "404", description = "Book not found")
+  })
+  @PreAuthorize("hasAnyAuthority('ROLE_read', 'ROLE_admin')")
   @Tag(name="Rate Book", description="Add only the rating to the book")
   @PatchMapping("/{id}/rating")
   public Book rateBook(
