@@ -1,6 +1,10 @@
 package ch.holiuk.anna.pocket_library.friend;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
@@ -8,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@Tag(name = "Friends", description = "Manage friend connections")
 @RequestMapping("/friends")
 public class FriendController {
 
@@ -17,7 +22,13 @@ public class FriendController {
     this.friendService = friendService;
   }
 
-  @Tag(name="Add Friend", description="Add new friend from users")
+  @Operation(summary = "Add a user as a friend")
+  @ApiResponses({
+          @ApiResponse(responseCode = "200", description = "Friend added"),
+          @ApiResponse(responseCode = "404", description = "User not found"),
+          @ApiResponse(responseCode = "401", description = "Unauthorized")
+  })
+  @PreAuthorize("hasAnyAuthority('ROLE_read', 'ROLE_admin')")
   @PostMapping("/{friendId}")
   public void addFriend(@AuthenticationPrincipal Jwt jwt,
                         @PathVariable String friendId) {
@@ -27,7 +38,12 @@ public class FriendController {
     friendService.addFriend(userId, friendId);
   }
 
-  @Tag(name="Get All Friends", description="Get list of all my friends")
+  @Operation(summary = "Get my friend list")
+  @ApiResponses({
+          @ApiResponse(responseCode = "200", description = "Friend list returned"),
+          @ApiResponse(responseCode = "401", description = "Unauthorized")
+  })
+  @PreAuthorize("hasAnyAuthority('ROLE_read', 'ROLE_admin')")
   @GetMapping
   public List<Friend> getFriends(@AuthenticationPrincipal Jwt jwt) {
 
