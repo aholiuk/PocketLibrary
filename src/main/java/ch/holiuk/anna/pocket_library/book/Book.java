@@ -22,6 +22,5 @@ public class Book {
   private Integer rating;
 }
 
-//TODO: Assign roles to all endpoints
-//      UnitTests
+//TODO: UnitTests
 //      Documentation
