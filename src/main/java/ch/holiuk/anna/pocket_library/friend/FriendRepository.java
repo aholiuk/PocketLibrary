@@ -6,4 +6,7 @@ import java.util.List;
 public interface FriendRepository extends JpaRepository<Friend, Long> {
 
   List<Friend> findByUserKeycloakId(String keycloakId);
+  void deleteByUserKeycloakId(String keycloakId);
+  void deleteByFriendKeycloakId(String keycloakId);
+  boolean existsByUserKeycloakIdAndFriendKeycloakId(String userId, String friendId);
 }

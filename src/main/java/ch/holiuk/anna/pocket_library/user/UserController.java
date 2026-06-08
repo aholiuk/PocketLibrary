@@ -8,7 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 @RestController
@@ -47,6 +47,23 @@ public class UserController {
   @GetMapping
   public List<User> getAllUsers() {
     return userRepository.findAll();
+  }
+
+  @Operation(summary = "Delete user by id – admin only")
+  @ApiResponses({
+          @ApiResponse(responseCode = "200", description = "User list returned"),
+          @ApiResponse(responseCode = "403", description = "Access denied – admin role required")
+  })
+
+  @PreAuthorize("hasAuthority('admin')")
+  @DeleteMapping("/{keycloakId}")
+  public ResponseEntity<String> deleteUser(@PathVariable String keycloakId) {
+    try {
+      userService.deleteUser(keycloakId);
+      return ResponseEntity.ok("User deleted successfully");
+    } catch (Exception e) {
+      return ResponseEntity.status(500).body("Failed to delete user: " + e.getMessage());
+    }
   }
 
 }

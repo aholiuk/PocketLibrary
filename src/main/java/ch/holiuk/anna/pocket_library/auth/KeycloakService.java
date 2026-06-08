@@ -132,4 +132,15 @@ public class KeycloakService {
 
     return tokens;
   }
+
+  public void deleteUser(String userId) {
+    String token = getToken();
+    String url = serverUrl + "/admin/realms/" + targetRealm + "/users/" + userId;
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.setBearerAuth(token);
+
+    HttpEntity<Void> request = new HttpEntity<>(headers);
+    restTemplate.exchange(url, HttpMethod.DELETE, request, Void.class);
+  }
 }
