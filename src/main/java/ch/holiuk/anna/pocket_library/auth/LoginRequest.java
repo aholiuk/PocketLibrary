@@ -1,13 +1,8 @@
 package ch.holiuk.anna.pocket_library.auth;
 
 import lombok.Data;
-
 @Data
-public class RegisterRequest {
-
+public class LoginRequest {
   private String username;
   private String password;
-  private String email;
-  private String firstName;
-  private String lastName;
 }
