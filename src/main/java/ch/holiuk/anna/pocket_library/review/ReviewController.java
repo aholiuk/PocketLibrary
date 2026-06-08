@@ -29,7 +29,7 @@ public class ReviewController {
           @ApiResponse(responseCode = "404", description = "Book or user not found"),
           @ApiResponse(responseCode = "401", description = "Unauthorized")
   })
-  @PreAuthorize("hasAnyAuthority('ROLE_read', 'ROLE_admin')")
+  @PreAuthorize("hasAnyAuthority('read', 'admin')")
   @PostMapping
   public Review createReview(@AuthenticationPrincipal Jwt jwt,
                              @RequestParam Long bookId,
@@ -45,7 +45,7 @@ public class ReviewController {
           @ApiResponse(responseCode = "200", description = "List of reviews returned"),
           @ApiResponse(responseCode = "401", description = "Unauthorized")
   })
-  @PreAuthorize("hasAnyAuthority('ROLE_read', 'ROLE_admin')")
+  @PreAuthorize("hasAnyAuthority('read', 'admin')")
   @GetMapping
   public List<Review> getAllReviews() {
     return reviewService.getAllReviews();
@@ -56,7 +56,7 @@ public class ReviewController {
           @ApiResponse(responseCode = "200", description = "Reviews returned"),
           @ApiResponse(responseCode = "404", description = "Book not found")
   })
-  @PreAuthorize("hasAnyAuthority('ROLE_read', 'ROLE_admin')")
+  @PreAuthorize("hasAnyAuthority('read', 'admin')")
   @GetMapping("/book/{bookId}")
   @Validated
   public List<Review> getReviewsByBook(@PathVariable Long bookId) {
@@ -68,7 +68,7 @@ public class ReviewController {
           @ApiResponse(responseCode = "200", description = "Reviews returned"),
           @ApiResponse(responseCode = "404", description = "User not found")
   })
-  @PreAuthorize("hasAnyAuthority('ROLE_read', 'ROLE_admin')")
+  @PreAuthorize("hasAnyAuthority('read', 'admin')")
   @GetMapping("/user/{userId}")
   public List<Review> getReviewsByUser(@PathVariable String userId) {
     return reviewService.getReviewsByUser(userId);

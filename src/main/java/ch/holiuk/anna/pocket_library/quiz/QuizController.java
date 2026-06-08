@@ -23,7 +23,7 @@ public class QuizController {
           @ApiResponse(responseCode = "200", description = "Quiz saved"),
           @ApiResponse(responseCode = "401", description = "Unauthorized")
   })
-  @PreAuthorize("hasAnyAuthority('ROLE_read', 'ROLE_admin')")
+  @PreAuthorize("hasAnyAuthority('read', 'admin')")
   @PostMapping
   public Quiz submitQuiz(@RequestBody Quiz quiz) {
     return quizService.saveResponse(quiz);

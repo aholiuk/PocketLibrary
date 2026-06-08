@@ -28,7 +28,7 @@ public class FriendController {
           @ApiResponse(responseCode = "404", description = "User not found"),
           @ApiResponse(responseCode = "401", description = "Unauthorized")
   })
-  @PreAuthorize("hasAnyAuthority('ROLE_read', 'ROLE_admin')")
+  @PreAuthorize("hasAnyAuthority('read', 'admin')")
   @PostMapping("/{friendId}")
   public void addFriend(@AuthenticationPrincipal Jwt jwt,
                         @PathVariable String friendId) {
@@ -43,7 +43,7 @@ public class FriendController {
           @ApiResponse(responseCode = "200", description = "Friend list returned"),
           @ApiResponse(responseCode = "401", description = "Unauthorized")
   })
-  @PreAuthorize("hasAnyAuthority('ROLE_read', 'ROLE_admin')")
+  @PreAuthorize("hasAnyAuthority('read', 'admin')")
   @GetMapping
   public List<Friend> getFriends(@AuthenticationPrincipal Jwt jwt) {
 

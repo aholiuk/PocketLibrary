@@ -29,8 +29,7 @@ public class KeycloakService {
   @Value("${keycloak.target-realm}")
   private String targetRealm;
 
-  public void createUser(RegisterRequest req) {
-
+  public String createUser(RegisterRequest req) {
     String token = getToken();
 
     String url = serverUrl + "/admin/realms/" + targetRealm + "/users";
@@ -50,30 +49,29 @@ public class KeycloakService {
     credential.put("type", "password");
     credential.put("value", req.getPassword());
     credential.put("temporary", false);
-
     user.put("credentials", List.of(credential));
 
-    HttpEntity<Map<String, Object>> request =
-            new HttpEntity<>(user, headers);
+    HttpEntity<Map<String, Object>> request = new HttpEntity<>(user, headers);
     ResponseEntity<String> createResponse = restTemplate.postForEntity(url, request, String.class);
 
-    // 2. get the new user's id from Location header
+    // get the new user's id from Location header
     String location = createResponse.getHeaders().getFirst("Location");
     String userId = location.substring(location.lastIndexOf("/") + 1);
 
-    // 3. get the 'read' role from the pocket-library client
-    String clientId = getClientId(token);
-    String roleUrl = serverUrl + "/admin/realms/" + targetRealm + "/clients/" + clientId + "/roles/read";
+    // get the 'read' role from the pocket-library client
+    String clientInternalId = getClientId(token);
+    String roleUrl = serverUrl + "/admin/realms/" + targetRealm + "/clients/" + clientInternalId + "/roles/read";
 
     HttpEntity<Void> roleRequest = new HttpEntity<>(headers);
     ResponseEntity<Map> roleResponse = restTemplate.exchange(roleUrl, HttpMethod.GET, roleRequest, Map.class);
     Map<String, Object> readRole = roleResponse.getBody();
 
-    // 4. assign the 'read' role to the new user
-    String assignUrl = serverUrl + "/admin/realms/" + targetRealm + "/users/" + userId + "/role-mappings/clients/" + clientId;
+    // assign the 'read' role to the new user
+    String assignUrl = serverUrl + "/admin/realms/" + targetRealm + "/users/" + userId + "/role-mappings/clients/" + clientInternalId;
     HttpEntity<List<Map<String, Object>>> assignRequest = new HttpEntity<>(List.of(readRole), headers);
-
     restTemplate.postForEntity(assignUrl, assignRequest, String.class);
+
+    return userId; // ← return the keycloak ID
   }
 
   private String getClientId(String token) {

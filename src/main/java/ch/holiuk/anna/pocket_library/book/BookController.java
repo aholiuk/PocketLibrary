@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,10 +27,11 @@ public class BookController {
           @ApiResponse(responseCode = "403", description = "Access denied – admin role required"),
           @ApiResponse(responseCode = "401", description = "Unauthorized")
   })
-  @PreAuthorize("hasAuthority('ROLE_admin')")
+  @PreAuthorize("hasAnyAuthority('read', 'admin')")
   @PostMapping
-  public Book addBook(@RequestBody final Book book) {
-    return bookService.addBook(book);
+  public Book addBook(@RequestBody final Book book, @AuthenticationPrincipal Jwt jwt) {
+    String keycloakId = jwt.getSubject();
+    return bookService.addBook(book, keycloakId);
   }
 
 
@@ -38,10 +41,11 @@ public class BookController {
           @ApiResponse(responseCode = "401", description = "Unauthorized"),
           @ApiResponse(responseCode = "403", description = "Access denied")
   })
-  @PreAuthorize("hasAnyAuthority('ROLE_read', 'ROLE_admin')")
+  @PreAuthorize("hasAnyAuthority('read', 'admin')")
   @GetMapping
-  public List<Book> getAllBooks() {
-    return bookService.getAllBooks();
+  public List<Book> getAllBooks(@AuthenticationPrincipal Jwt jwt) {
+    String keycloakId = jwt.getSubject();
+    return bookService.getAllBooks(keycloakId);
   }
 
 
@@ -51,7 +55,7 @@ public class BookController {
           @ApiResponse(responseCode = "404", description = "Book not found"),
           @ApiResponse(responseCode = "401", description = "Unauthorized")
   })
-  @PreAuthorize("hasAnyAuthority('ROLE_read', 'ROLE_admin')")
+  @PreAuthorize("hasAnyAuthority('read', 'admin')")
   @GetMapping("/{id}")
   public Book getBook(@PathVariable Long id) {
     return bookService.getBookById(id);
@@ -64,7 +68,7 @@ public class BookController {
           @ApiResponse(responseCode = "403", description = "Access denied – admin role required"),
           @ApiResponse(responseCode = "404", description = "Book not found")
   })
-  @PreAuthorize("hasAuthority('ROLE_admin')")
+  @PreAuthorize("hasAnyAuthority('read', 'admin')")
   @DeleteMapping("/{id}")
   public void deleteBook(@PathVariable Long id) {
     bookService.deleteBook(id);
@@ -77,7 +81,7 @@ public class BookController {
           @ApiResponse(responseCode = "403", description = "Access denied – admin role required"),
           @ApiResponse(responseCode = "404", description = "Book not found")
   })
-  @PreAuthorize("hasAuthority('ROLE_admin')")
+  @PreAuthorize("hasAnyAuthority('read', 'admin')")
   @PutMapping("/{id}")
   public Book updateBook(@PathVariable Long id, @RequestBody Book updatedBook) {
     return bookService.updateBook(id, updatedBook);
@@ -90,7 +94,7 @@ public class BookController {
           @ApiResponse(responseCode = "404", description = "Book not found"),
           @ApiResponse(responseCode = "401", description = "Unauthorized")
   })
-  @PreAuthorize("hasAnyAuthority('ROLE_read', 'ROLE_admin')")
+  @PreAuthorize("hasAnyAuthority('read', 'admin')")
   @PatchMapping("/{id}")
   public Book updatePagesRead(
           @PathVariable Long id,
@@ -106,7 +110,7 @@ public class BookController {
           @ApiResponse(responseCode = "400", description = "Invalid rating value"),
           @ApiResponse(responseCode = "404", description = "Book not found")
   })
-  @PreAuthorize("hasAnyAuthority('ROLE_read', 'ROLE_admin')")
+  @PreAuthorize("hasAnyAuthority('read', 'admin')")
   @PatchMapping("/{id}/rating")
   public Book rateBook(
           @PathVariable Long id,

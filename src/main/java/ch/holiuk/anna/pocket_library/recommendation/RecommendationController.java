@@ -26,7 +26,7 @@ public class RecommendationController {
           @ApiResponse(responseCode = "404", description = "Quiz not found for user"),
           @ApiResponse(responseCode = "401", description = "Unauthorized")
   })
-  @PreAuthorize("hasAnyAuthority('ROLE_read', 'ROLE_admin')")
+  @PreAuthorize("hasAnyAuthority('read', 'admin')")
   @GetMapping("/{userId}")
   public List<String> get(@PathVariable String userId) {
     return recommendationService.recommend(userId);

@@ -1,10 +1,11 @@
 package ch.holiuk.anna.pocket_library.auth;
 
+import ch.holiuk.anna.pocket_library.user.User;
+import ch.holiuk.anna.pocket_library.user.UserRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
-
 import java.util.Map;
 
 @RestController
@@ -13,16 +14,25 @@ import java.util.Map;
 public class AuthController {
 
   private final KeycloakService keycloakService;
+  private final UserRepository userRepository;
 
-  public AuthController(KeycloakService keycloakService) {
+  public AuthController(KeycloakService keycloakService, UserRepository userRepository) {
     this.keycloakService = keycloakService;
+    this.userRepository = userRepository;
   }
 
-  @Tag(name="Register", description="Register user")
   @PostMapping("/register")
   public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
     try {
-      keycloakService.createUser(request);
+      // 1. create user in Keycloak and get their ID back
+      String keycloakId = keycloakService.createUser(request);
+
+      // 2. save user to our database
+      User user = new User();
+      user.setKeycloakId(keycloakId);
+      user.setUsername(request.getUsername());
+      userRepository.save(user);
+
       return ResponseEntity.ok("User created successfully");
     } catch (HttpClientErrorException.Conflict e) {
       return ResponseEntity.status(409).body("User already exists");
@@ -31,7 +41,6 @@ public class AuthController {
     }
   }
 
-  @Tag(name="Login", description="Login user")
   @PostMapping("/login")
   public ResponseEntity<?> login(@RequestBody LoginRequest request) {
     try {

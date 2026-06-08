@@ -43,7 +43,7 @@ public class UserController {
           @ApiResponse(responseCode = "200", description = "User list returned"),
           @ApiResponse(responseCode = "403", description = "Access denied – admin role required")
   })
-  @PreAuthorize("hasAuthority('ROLE_admin')")
+  @PreAuthorize("hasAuthority('admin')")
   @GetMapping
   public List<User> getAllUsers() {
     return userRepository.findAll();

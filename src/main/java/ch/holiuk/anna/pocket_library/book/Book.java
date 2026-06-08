@@ -20,4 +20,5 @@ public class Book {
   private Integer pagesRead = 0;
   private Double progress = 0.0;
   private Integer rating;
+  private String keycloakId;
 }
